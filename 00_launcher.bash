@@ -39,7 +39,8 @@ function launch_step_04 {
 
   # Determine time and RAM
   C02=$(cardinality "$dataset")
-  RAM_G=$(arithm "15+$C02*100/1e9")
+  #RAM_G=$(arithm "15+$C02*100/1e9") # consistently too high by 50gb or more
+  RAM_G=$(arithm "$C02*75/1e9") # I think this lower estimate should work
   S02=$(size_02 "$dataset")
   TIME_H=$(arithm "6+$S02*4/1e9")
   USE_FRACTION=1
@@ -63,7 +64,7 @@ function launch_step_05 {
 
   # Determine time and RAM
   S02=$(size_02 "$dataset")
-  RAM_G=$(arithm "3+0.2*$S02/1e9")
+  RAM_G=$(arithm "3+0.4*$S02/1e9")
   TIME_H=$(arithm "6+2*$S02/1e9")
 
   # Launch
@@ -79,7 +80,7 @@ function launch_step_06 {
 
   # Determine time by read size
   S04=$(size_04 "$dataset")
-  RAM_G=10
+  RAM_G=25
   TIME_H=$(arithm "2+15*$S04/1e9")
 
   # Launch

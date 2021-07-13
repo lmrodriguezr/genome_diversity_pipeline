@@ -24,7 +24,7 @@ for asm in trim norm ; do
   if [[ ! -s "${out}.bam" ]] ; then
     samtools view -b -@ 11 \
       "05_maxbin/${dataset}-${asm}.d/${dataset}-${asm}.sam0" \
-      | samtools sort -@ 11 -l 9 -o "${out}.bam" - \
+      | samtools sort -@ 11 -m 2G -l 9 -o "${out}.bam" - \
       && rm "05_maxbin/${dataset}-${asm}.d/${dataset}-${asm}.sam0"
   fi
   # depths
