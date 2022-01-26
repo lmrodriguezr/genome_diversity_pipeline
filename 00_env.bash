@@ -5,18 +5,19 @@ if [[ $GDIV_ENV != 4 ]] ; then
   # Server dependent module.
   # Need conda loaded with miniconda or anaconda
   module purge 
-  module load anaconda3/2020.02 &>/dev/null
+  module load anaconda3
 
   ###############################################################################
   # Sever dependent - need link to servers conda install of genome div yaml
   shared3="/storage/coda1/p-ktk3/0/shared/rich_project_bio-konstantinidis/shared3"
-  conda_env_path="$shared3/conda_envs/genome_diversity"
-  if [[ ! -d "$HOME/.conda/envs/genome_diversity" ]] ; then
+  #conda_env_path="$shared3/conda_envs/genome_diversity"
+  conda_env_path="$HOME/data/genome_diversity_spa"
+  if [[ ! -d "$HOME/.conda/envs/genome_diversity_spa" ]] ; then
     GDIV_CONDA=${GDIV_CONDA:-"$conda_env_path"}
     mkdir -p "$HOME/.conda/envs"
-    ln -s "$GDIV_CONDA" "$HOME/.conda/envs/genome_diversity"
+    ln -s "$GDIV_CONDA" "$HOME/.conda/envs/genome_diversity_spa"
   fi
-  source activate genome_diversity
+  source activate genome_diversity_spa
 
   ##############################################################################
   # I think we should just have this as a requirement for users to have

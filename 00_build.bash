@@ -12,6 +12,6 @@ fi
 mkdir -p "$target"
 cd "$target"
 mkdir -p 01_reads 02_trim 03_norm \
-  04_asm 05_maxbin 06_metabat 07_derep 08_anir \
+  04_asm 06_maxbin 07_metabat 08_derep 09_anir \
   xx_log xx_summary
 

@@ -16,16 +16,16 @@ fi
 . "$pkg/00_env.bash"
 cd "$target"
 
-for asm in trim norm ; do
-  dir="06_metabat/${dataset}-${asm}.d"
+for asm in trim-idba norm-idba trim-spad norm-spad ; do
+  dir="07_metabat/${dataset}-${asm}.d"
   out="$dir/${dataset}-${asm}"
   mkdir -p "$dir"
   # sam -> bam
   if [[ ! -s "${out}.bam" ]] ; then
     samtools view -b -@ 11 \
-      "05_maxbin/${dataset}-${asm}.d/${dataset}-${asm}.sam0" \
+      "06_maxbin/${dataset}-${asm}.d/${dataset}-${asm}.sam0" \
       | samtools sort -@ 11 -m 2G -l 9 -o "${out}.bam" - \
-      && rm "05_maxbin/${dataset}-${asm}.d/${dataset}-${asm}.sam0"
+      && rm "06_maxbin/${dataset}-${asm}.d/${dataset}-${asm}.sam0"
   fi
   # depths
   jgi_summarize_bam_contig_depths \
@@ -39,4 +39,4 @@ for asm in trim norm ; do
 done
 
 # Launch next step
-"$pkg/00_launcher.bash" . "$dataset" 07
+"$pkg/00_launcher.bash" . "$dataset" 08

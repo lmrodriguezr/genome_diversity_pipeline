@@ -17,21 +17,21 @@ fi
 #. "$pkg/00_env.bash"
 cd "$target"
 
-dir="07_derep/$dataset"
+dir="08_derep/$dataset"
 
 miga new -P "$dir" -t genomes
 miga add -P "$dir" -t popgenome -i assembly \
   -R '^(?:.*\/)?(.+?)(?i:\.f[nastq]+)?$' \
-  --prefix maxbin_ -v 05_maxbin/"$dataset"-*/*.fasta
+  --prefix maxbin_ -v 06_maxbin/"$dataset"-*/*.fasta
 miga add -P "$dir" -t popgenome -i assembly \
   -R '^(?:.*\/)?(.+?)(?i:\.f[nastq]+)?$' \
-  --prefix metabat_ -v 06_metabat/"$dataset"-*/*.fa
+  --prefix metabat_ -v 07_metabat/"$dataset"-*/*.fa
 
 miga derep_wf -o "$dir" --fast -j 12 -t 1 -v 
 
 # load miga environment to run this ruby script.
 eval "$(miga env)"
-"$pkg/scripts/07_01_gsp_qual.rb" "$dir" > "$dir/method_qual.tsv"
+"$pkg/scripts/08_01_gsp_qual.rb" "$dir" > "$dir/method_qual.tsv"
 
 # Launch next step
-"$pkg/00_launcher.bash" . "$dataset" 08
+"$pkg/00_launcher.bash" . "$dataset" 09
