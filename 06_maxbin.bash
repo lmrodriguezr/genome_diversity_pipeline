@@ -16,8 +16,8 @@ fi
 . "$pkg/00_env.bash"
 cd "$target"
 
-for asm in trim norm ; do
-  dir="05_maxbin/${dataset}-${asm}.d"
+for asm in trim-idba norm-idba trim-spad norm-spad ; do
+  dir="06_maxbin/${dataset}-${asm}.d"
   out="$dir/${dataset}-${asm}"
   mkdir -p "$dir"
   #[[ -d "$dir" ]] && continue
@@ -33,4 +33,4 @@ for asm in trim norm ; do
 done
 
 # Launch next step
-"$pkg/00_launcher.bash" . "$dataset" 06
+"$pkg/00_launcher.bash" . "$dataset" 07

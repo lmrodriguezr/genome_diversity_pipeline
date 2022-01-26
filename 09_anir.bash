@@ -16,7 +16,7 @@ fi
 . "$pkg/00_env.bash"
 cd "$target"
 
-dir="08_anir/$dataset"
+dir="09_anir/$dataset"
 mkdir -p "$dir"
 
 # Compile database
@@ -24,8 +24,8 @@ for genome in 07_derep/${dataset}/representatives/*.LargeContigs.fna ; do
   name=$(basename "$genome" .LargeContigs.fna)
   perl -pe 's/^>/>'$name':/' < "$genome" > "${genome}.tag"
 done
-cat 07_derep/${dataset}/representatives/*.LargeContigs.fna.tag \
-  > 07_derep/${dataset}/representatives.fna
+cat 08_derep/${dataset}/representatives/*.LargeContigs.fna.tag \
+  > 08_derep/${dataset}/representatives.fna
 
 # Determine query settings
 reads="single"
@@ -36,7 +36,7 @@ if [[ -e "02_trim/${dataset}.2.fastq.gz" ]] ; then
 fi
 
 # Run base ANIr to generate SAM file
-anir.rb -g "07_derep/${dataset}/representatives.fna" \
+anir.rb -g "08_derep/${dataset}/representatives.fna" \
   -r "$reads_file" --r-type "$reads" --r-format fastq \
   -m "$dir/map.sam" -t 12 -a fix -i 90
 
@@ -60,7 +60,7 @@ export -f anir_for_genome
 parallel -j 12 anir_for_genome "$dir" {} {} \
   ::: 07_derep/${dataset}/representatives/*.LargeContigs.fna.tag \
   ::: 97.5 95 90
-rm 07_derep/${dataset}/representatives/*.LargeContigs.fna.tag
+rm 08_derep/${dataset}/representatives/*.LargeContigs.fna.tag
 rm "$dir"/*.identity-97.5.txt
 rm "$dir"/*.identity-95.txt
 
@@ -69,7 +69,7 @@ for i in 90 95 97.5 ; do
   sam.filter.rb -m "$dir/map.bam" --m-format bam -i "$i" \
     | samtools view -b - -@ 12 \
     | samtools sort -@ 12 - \
-    | bcftools mpileup -Ob -I -f "07_derep/${dataset}/representatives.fna" - \
+    | bcftools mpileup -Ob -I -f "08_derep/${dataset}/representatives.fna" - \
     | bcftools call -mv -v -Ob --ploidy 1 \
     | bcftools filter -i'QUAL>15 && DP>5' -Oz -o "$dir/map-${i}.vcf.gz"
 done
@@ -80,4 +80,4 @@ for i in $dir/*.anir-95.tsv ; do
 done > $dir/anir-95.tsv
 
 # Launch next step
-"$pkg/00_launcher.bash" . "$dataset" 09
+"$pkg/00_launcher.bash" . "$dataset" 10

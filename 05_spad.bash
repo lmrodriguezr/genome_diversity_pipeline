@@ -58,34 +58,14 @@ USE_FRACTION=${USE_FRACTION:-1} # Use all reads by default
 . "$pkg/00_env.bash"
 cd "$target"
 
-# fq -> fa
-# The output is .fa, not .fa.gz, despite the relic .gz. in the file name
-for i in 0[23]_*/"$dataset".[12].fastq.gz ; do
-  gzip -c -d "$i" | awk -f "$(which FastQ.toFastA.awk)" > "${i}.fa_tmp"
-done
-
-# paired
-for i in 0[23]_*/"$dataset".2.fastq.gz.fa_tmp ; do
-  [[ -s "$i" ]] || continue
-  d=$(dirname "$i")
-  FastA.interpose.pl -T 0 "$d/${dataset}.coupled.fa" \
-    "$d/${dataset}".[12].fastq.gz.fa_tmp
-  rm "$d/${dataset}".[12].fastq.gz.fa_tmp
-done
-
-# single
-for i in 0[23]_*/"$dataset".1.fastq.gz.fa_tmp ; do
-  [[ -s "$i" ]] || continue
-  d=$(dirname "$i")
-  mv "$i" "$d/${dataset}.single.fa"
-done
-
 # assemble
 for i in 0[23]*_*/"$dataset".*.fa ; do
   var=$(echo "$(dirname "$i")" | perl -pe 's/^\d+_//')
   base="04_asm/${dataset}-${var}"
   dir="${base}.d"
   rd="r"
+
+### NEED TO ENSURE INPUT TO SPAdes
 
   # subsample & run assembly
   if [[ "$i" == *.single.fa ]] ; then
@@ -94,27 +74,36 @@ for i in 0[23]*_*/"$dataset".*.fa ; do
   else
     subsample_coupled "$i" "${dir}.fa"
   fi
-  idba_ud -o "$dir" -$rd "${dir}.fa" --num_threads 24 --maxk 120
+ 
+  # SPAdes hates interleaved reads:
+  # FastA.split.pl "${dir}.fa" ${dir} 2
 
-  # link result
-  if [[ -s "$dir/scaffold.fa" ]] ; then
-    ln "$dir/scaffold.fa" "${base}.AllContigs.fna"
+  # reads=`echo -1 "${dir}.1.fa" -2 "${dir}.2.fa"`
+  # echo "${reads}"
+   spades.py --meta --only-assembler -o "${dataset}_spa" --12 "${dir}.fa" -m "${MEM}" -t 24 -k 21,33,55,77,99,127
+
+  # link result -- SPAdes output in directory is called: contigs.fasta
+  if [[ -s "${dataset}_spa/contigs.fasta" ]] ; then
+    ln "${dataset}_spa/contigs.fasta" "${base}-spad.AllContigs.fna"
   else
-    ln "$dir/contig.fa" "${base}.AllContigs.fna"
+    ln "${dataset}_spa/contigs.fasta" "${base}-spad.AllContigs.fna"
   fi
 
   # filter by length
-  FastA.length.pl "${base}.AllContigs.fna" | awk '$2 >= 1000 { print $1 }' \
-    | FastA.filter.pl /dev/stdin "${base}.AllContigs.fna" \
-    > "${base}.LargeContigs.fna"
+  FastA.length.pl "${base}-spad.AllContigs.fna" | awk '$2 >= 1000 { print $1 }' \
+    | FastA.filter.pl /dev/stdin "${base}-spad.AllContigs.fna" \
+    > "${base}-spad.LargeContigs.fna"
 
   # cleanup
-  rm "${base}.AllContigs.fna"
-  rm -r "$dir"
+  rm "${base}-spad.AllContigs.fna"
   rm "${dir}.fa"
+  rm "${dir}.1.fa"
+  rm "${dir}.2.fa"
+  rm -r "$dir"
+  rm -r ${dataset}_spa
 done
 
 # If successful, Launch next step
-if [[ -s "${base}.LargeContigs.fna" ]] ; then
-  "$pkg/00_launcher.bash" . "$dataset" 05
+if [[ -s "${base}-spad.LargeContigs.fna" ]] ; then
+  "$pkg/00_launcher.bash" . "$dataset" 06
 fi

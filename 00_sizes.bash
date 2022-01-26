@@ -69,16 +69,18 @@ function next_step {
     next_step=02
   elif [[ ! -s "03_norm/${dataset}.1.fastq.gz" ]] ; then
     next_step=03
-  elif [[ ! -s "04_asm/${dataset}-norm.LargeContigs.fna" ]] ; then
+  elif [[ ! -s "04_asm/${dataset}-norm-idba.LargeContigs.fna" ]] ; then
     next_step=04
-  elif [[ ! -s "05_maxbin/${dataset}-norm.d/${dataset}-norm.summary" ]] ; then
-    next_step=05
-  elif [[ ! -s "06_metabat/${dataset}-norm.d/${dataset}-norm.1.fa" ]] ; then
+  elif [[ ! -s "04_asm/${dataset}-norm-spad.LargeContigs.fna" ]] ; then
+   next_step=05
+  elif [[ ! -s "06_maxbin/${dataset}-norm-idba.d/${dataset}-norm-idba.summary" ]] ; then
     next_step=06
-  elif [[ ! -s "07_derep/${dataset}/genomospecies.tsv" ]] ; then
+  elif [[ ! -s "07_metabat/${dataset}-norm-idba.d/${dataset}-norm-idba.1.fa" ]] ; then
     next_step=07
-  elif [[ ! -s "08_anir/${dataset}/anir-95.tsv" ]] ; then
+  elif [[ ! -s "08_derep/${dataset}/genomospecies.tsv" ]] ; then
     next_step=08
+  elif [[ ! -s "09_anir/${dataset}/anir-95.tsv" ]] ; then
+    next_step=09
   else
     next_step=XX
   fi
