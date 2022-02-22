@@ -1,0 +1,34 @@
+name: genome_diversity_spa
+
+dependencies:
+  # perl is almost always installed with core linux installations
+  # step 02 & 03
+  - bbmap #bionconda # this should include bbtools (bbduk, bbnorm)
+  # step 04
+  ## uses perl
+  ## uses enveomics
+  ## Need python for the subsampling script.
+  - python #anaconda - I think this is the default channel
+  - idba #bioconda
+  - spades #bioconda
+  # step 05
+  - maxbin2 #bionconda
+  # step 06
+  - metabat2 #bionconda
+  # future step 07
+  - vamb #bionconda
+  # current step 07
+  ## uses miga
+  # current step 08
+  ## uses enveomics
+  ## uses perl
+  - samtools #bionconda
+  - parallel #conda-forge
+  - ruby>=2.7.2 #conda-forge
+  - bcftools #bionconda
+  - tbb=2020.2 # newer versions cause bowtie2 error.
+
+channels:
+  - conda-forge
+  - bioconda
+
