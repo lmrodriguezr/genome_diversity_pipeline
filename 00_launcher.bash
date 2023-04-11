@@ -205,7 +205,7 @@ function launch_step_08 {
   #  -o "xx_log/${dataset}.08.txt" -j oe
 }
 
-# Launch step 09: ANIr
+# Launch step 09: Mapping
 function launch_step_09 {
   local dataset=$1
 
@@ -213,25 +213,39 @@ function launch_step_09 {
   RAM_G=30
   TIME_H=72
 
-   # Launch
+  # Launch
   sbatch --job-name="GD09-${dataset}" \
        --nodes=1 \
        --ntasks-per-node=12 \
        --mem=${RAM_G}g \
        --time=${TIME_H}:00:00 \
        --output=xx_log/${dataset}.09.txt \
-       --export=PKG=$pkg,TARGET=$PWD,DATASET=$dataset,STEP=09_anir \
+       --export=PKG=$pkg,TARGET=$PWD,DATASET=$dataset,STEP=09_mapping \
        "$pkg/00_launcher.sbatch"
-
-  #qsub "$pkg/00_launcher.pbs" -N "GD09-$dataset" \
-  #  -v "PKG=$pkg,TARGET=$PWD,DATASET=$dataset,STEP=09_anir" \
-  #  -l nodes=1:ppn=12 -l mem="${RAM_G}g" -l walltime="${TIME_H}:00:00" \
-  #  -o "xx_log/${dataset}.09.txt" -j oe
 }
 
-# Launch step 10: Not yet implemented
+# Launch step 10: Coverage
 function launch_step_10 {
-  echo "STEP 10: NOT YET IMPLEMENTED" >&2
+  local dataset=$1
+
+  # No data yet to determine time or RAM
+  RAM_G=20
+  TIME_H=12
+
+  # Launch
+  sbatch --job-name="GD10-${dataset}" \
+       --nodes=1 \
+       --ntasks-per-node=12 \
+       --mem=${RAM_G}g \
+       --time=${TIME_H}:00:00 \
+       --output=xx_log/${dataset}.10.txt \
+       --export=PKG=$pkg,TARGET=$PWD,DATASET=$dataset,STEP=10_coverage \
+       "$pkg/00_launcher.sbatch"
+}
+
+# Launch step 11: Not yet implemented
+function launch_step_11 {
+  echo "STEP 11: NOT YET IMPLEMENTED" >&2
 }
 
 # Source code
