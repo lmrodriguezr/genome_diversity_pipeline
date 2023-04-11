@@ -17,6 +17,7 @@ RAM=${RAM:-100} # Use 100g if RAM is not given
 . "$pkg/00_env.bash"
 cd "$target"
 
+conda deactivate
 cmd="bbnorm.sh in='02_trim/${dataset}.1.fastq.gz' \
   out='03_norm/${dataset}.1.fastq'"
 if [[ -s "02_trim/${dataset}.2.fastq.gz" ]] ; then

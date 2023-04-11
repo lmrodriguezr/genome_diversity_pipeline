@@ -94,6 +94,7 @@ for i in 0[23]*_*/"$dataset".*.fa ; do
   else
     subsample_coupled "$i" "${dir}.fa"
   fi
+  which idba_ud
   idba_ud -o "$dir" -$rd "${dir}.fa" --num_threads 24 --maxk 120
 
   # link result

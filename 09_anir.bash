@@ -20,7 +20,7 @@ dir="09_anir/$dataset"
 mkdir -p "$dir"
 
 # Compile database
-for genome in 07_derep/${dataset}/representatives/*.LargeContigs.fna ; do
+for genome in 08_derep/${dataset}/representatives/*.LargeContigs.fna ; do
   name=$(basename "$genome" .LargeContigs.fna)
   perl -pe 's/^>/>'$name':/' < "$genome" > "${genome}.tag"
 done
@@ -58,7 +58,7 @@ function anir_for_genome {
 }
 export -f anir_for_genome
 parallel -j 12 anir_for_genome "$dir" {} {} \
-  ::: 07_derep/${dataset}/representatives/*.LargeContigs.fna.tag \
+  ::: 08_derep/${dataset}/representatives/*.LargeContigs.fna.tag \
   ::: 97.5 95 90
 rm 08_derep/${dataset}/representatives/*.LargeContigs.fna.tag
 rm "$dir"/*.identity-97.5.txt
@@ -79,5 +79,17 @@ for i in $dir/*.anir-95.tsv ; do
   echo -e "$(basename "$i" .anir-95.tsv)\t$(tail -n 1 "$i")"
 done > $dir/anir-95.tsv
 
+#use coverm to get MAG abundances
+echo "start coverm"
+#mkdir -p "09_anir/${dataset}/coverm"
+g_dir="08_derep/${dataset}/representatives"
+
+for file in 02_trim/*.gz; do
+out=$(basename "$file" .gz)
+coverm genome --interleaved "${file}" -p bwa-mem -d ${g_dir} \
+--min-read-percent-identity 95 --min-read-aligned-percent 70 --output-format sparse \
+--trim-max 90 --trim-min 10 -m trimmed_mean -o "09_anir/${dataset}/coverm-out-${out}.txt"  -t 10
+
+done
 # Launch next step
 "$pkg/00_launcher.bash" . "$dataset" 10

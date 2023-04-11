@@ -13,6 +13,7 @@ if [[ ! -n $target || ! -n $dataset ]] ; then
   exit 0
 fi
 
+echo "$pkg"
 . "$pkg/00_env.bash"
 cd "$target"
 

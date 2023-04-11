@@ -10,14 +10,17 @@ if [[ $GDIV_ENV != 4 ]] ; then
   ###############################################################################
   # Sever dependent - need link to servers conda install of genome div yaml
   shared3="/storage/coda1/p-ktk3/0/shared/rich_project_bio-konstantinidis/shared3"
-  #conda_env_path="$shared3/conda_envs/genome_diversity"
-  conda_env_path="$HOME/data/genome_diversity_spa"
+  conda_env_path="/storage/scratch1/3/fyuan43/conda-env/gdp_jdk8"
+  #conda_env_path="$HOME/data/genome_diversity_spa" -- temp Fang
+ # conda_env_path="/storage/home/hcoda1/3/fyuan43/data/conda_test/conda_env"
+#  conda_env_path="/storage/home/hcoda1/3/fyuan43/data/conda_test/gdp_env"
   if [[ ! -d "$HOME/.conda/envs/genome_diversity_spa" ]] ; then
     GDIV_CONDA=${GDIV_CONDA:-"$conda_env_path"}
     mkdir -p "$HOME/.conda/envs"
     ln -s "$GDIV_CONDA" "$HOME/.conda/envs/genome_diversity_spa"
   fi
   source activate genome_diversity_spa
+#  eval "$(miga env)"
 
   ##############################################################################
   # I think we should just have this as a requirement for users to have
