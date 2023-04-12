@@ -31,11 +31,11 @@ cat 08_derep/${dataset}/representatives/*.LargeContigs.fna.tag \
 bwa-mem2 index -p "$dir/index" "08_derep/${dataset}/representatives.fna"
 
 # Run mapping
-CMD="bwa-mem2 mem '$dir/index' '02_trim/${dataset}.1.fastq.gz'"
+files="02_trim/${dataset}.1.fastq.gz"
 if [[ -e "02_trim/${dataset}.2.fastq.gz" ]] ; then
-  CMD="$CMD '02_trim/${dataset}.2.fastq.gz'"
+  files="$files 02_trim/${dataset}.2.fastq.gz"
 fi
-$CMD -o "$dir/map.sam"
+bwa-mem2 mem "$dir/index" $files
 
 # Compress to BAM and sort it
 samtools view -b "$dir/map.sam" -@ 12 \
@@ -43,7 +43,7 @@ samtools view -b "$dir/map.sam" -@ 12 \
   && rm "$dir/map.sam"
 
 # Build BCF files
-# TODO: Implement PI calculation
+# TODO: Implement pi calculation
 # for i in 90 95 97.5 ; do
 #   sam.filter.rb -m "$dir/map.bam" --m-format bam -i "$i" \
 #     | samtools view -b - -@ 12 \
