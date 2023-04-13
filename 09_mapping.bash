@@ -35,7 +35,7 @@ files="02_trim/${dataset}.1.fastq.gz"
 if [[ -e "02_trim/${dataset}.2.fastq.gz" ]] ; then
   files="$files 02_trim/${dataset}.2.fastq.gz"
 fi
-bwa-mem2 mem "$dir/index" $files
+bwa-mem2 mem -o "$dir/map.sam" "$dir/index" $files
 
 # Compress to BAM and sort it
 samtools view -b "$dir/map.sam" -@ 12 \
